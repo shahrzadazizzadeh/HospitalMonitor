@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Facility {
+  id        String     @id @default(cuid())
+  name      String
+  nameHe    String?
+  address   String?
+  createdAt DateTime   @default(now())
+  locations Location[]
+  uploads   Upload[]
+}
+
+model Location {
+  id         String   @id @default(cuid())
+  locationId String
+  name       String
+  nameHe     String?
+  grade      String?
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  samples    Sample[]
+
+  @@unique([facilityId, locationId])
+}
+
+model Sample {
+  id          String    @id @default(cuid())
+  sampleDate  DateTime
+  sampleType  String
+  cfuCount    Float
+  actionLimit Float
+  alertLimit  Float
+  status      String    @default("compliant")
+  locationId  String
+  location    Location  @relation(fields: [locationId], references: [id])
+  organismId  String?
+  organism    Organism? @relation(fields: [organismId], references: [id])
+  uploadId    String?
+  upload      Upload?   @relation(fields: [uploadId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Organism {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  genus     String?
+  species   String?
+  gramType  String?
+  riskLevel String?
+  samples   Sample[]
+}
+
+model Upload {
+  id         String   @id @default(cuid())
+  fileName   String
+  fileSize   Int
+  rowCount   Int
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  status     String   @default("processed")
+  uploadedAt DateTime @default(now())
+  samples    Sample[]
+}

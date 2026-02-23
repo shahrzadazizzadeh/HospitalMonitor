@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Magnus EM — Environmental Monitoring Platform
 
-## Getting Started
+AI-powered pharmaceutical environmental monitoring platform for cleanroom compliance management.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Data Upload** — Drag-and-drop Excel/CSV file import with flexible header mapping
+- **Dashboard** — Real-time stats including:
+  - Total Samples with type breakdown (Active Air, Surface, Personnel, etc.)
+  - Compliance Rate (compliant samples / total samples)
+  - Alert and Action event counts
+  - CFU Trends chart by sample type
+  - Microorganism Distribution chart
+  - Excursion Events table (recent alerts and action exceedances)
+- **Samples View** — Sortable, filterable table of all imported samples
+- **Status Computation** — Automatic compliant/alert/action classification based on CFU vs limits
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework:** Next.js 16, React 19, TypeScript
+- **Database:** SQLite via Prisma ORM + LibSQL
+- **Charts:** Chart.js + react-chartjs-2
+- **Styling:** Tailwind CSS 4
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Prerequisites
 
-## Learn More
+- [Node.js](https://nodejs.org/) v18 or later
 
-To learn more about Next.js, take a look at the following resources:
+## Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/shahrzadazizzadeh/HospitalMonitor.git
+   cd HospitalMonitor
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. **Create the environment file**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Create a file called `.env` in the project root:
+   ```
+   DATABASE_URL="file:./dev.db"
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Generate the Prisma client**
+   ```bash
+   npx prisma generate
+   ```
+
+5. **Create the database**
+   ```bash
+   npx prisma db push
+   ```
+
+6. **Start the app**
+   ```bash
+   npm run dev
+   ```
+
+7. **Open in browser**
+
+   Go to [http://localhost:3000](http://localhost:3000)
+
+## Usage
+
+1. Click **Upload** in the navigation bar
+2. Drag and drop an Excel (.xlsx/.xls) or CSV file
+3. Go back to the **Dashboard** to see metrics and charts
+
+### Required Excel Columns
+
+| Column       | Accepted header names                          |
+|-------------|------------------------------------------------|
+| Sample Date  | `Sample_Date`, `Date`, `SampleDate`            |
+| Location ID  | `Location_ID`, `LocationID`                    |
+| Location Name| `Location_Name`, `LocationName`, `Location`    |
+| Sample Type  | `Sample_Type`, `SampleType`, `Type`            |
+| CFU Count    | `CFU_Count`, `CFUCount`, `CFU`                 |
+| Action Limit | `Action_Limit`, `ActionLimit`                  |
+| Alert Limit  | `Alert_Limit`, `AlertLimit`                    |
+| Organism     | `Organism`, `Microorganism` *(optional)*       |
+
+## Database Schema
+
+- **Facility** — Hospital/manufacturing site
+- **Location** — Monitoring points within a facility (with optional cleanroom grade)
+- **Sample** — Individual EM readings with CFU counts and compliance status
+- **Organism** — Identified microorganisms
+- **Upload** — File import records

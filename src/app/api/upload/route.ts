@@ -67,11 +67,14 @@ export async function POST(request: NextRequest) {
             locationId: sample.locationId,
           },
         },
-        update: {},
+        update: {
+          ...(sample.gmpGrade ? { grade: sample.gmpGrade } : {}),
+        },
         create: {
           locationId: sample.locationId,
           name: sample.locationId,
           nameHe: sample.locationName !== sample.locationId ? sample.locationName : null,
+          grade: sample.gmpGrade || null,
           facilityId: facility.id,
         },
       });
@@ -81,8 +84,15 @@ export async function POST(request: NextRequest) {
       if (sample.organism && sample.organism !== "Unknown") {
         organism = await prisma.organism.upsert({
           where: { name: sample.organism },
-          update: {},
-          create: { name: sample.organism },
+          update: {
+            ...(sample.gramType ? { gramType: sample.gramType } : {}),
+            ...(sample.riskLevel ? { riskLevel: sample.riskLevel } : {}),
+          },
+          create: {
+            name: sample.organism,
+            gramType: sample.gramType || null,
+            riskLevel: sample.riskLevel || null,
+          },
         });
       }
 
@@ -103,6 +113,10 @@ export async function POST(request: NextRequest) {
           actionLimit: sample.actionLimit,
           alertLimit: sample.alertLimit,
           status,
+          shift: sample.shift || null,
+          gmpGrade: sample.gmpGrade || null,
+          isoClassification: sample.isoClassification || null,
+          contaminationSource: sample.contaminationSource || null,
           locationId: location.id,
           organismId: organism?.id || null,
           uploadId: upload.id,

@@ -17,3 +17,36 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+@media print {
+  /* Hide navigation and interactive elements */
+  nav,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Reset backgrounds for printing */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11px !important;
+  }
+
+  /* Avoid page breaks inside sections */
+  section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Page break before each major section */
+  section + section {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  /* Ensure charts are visible */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}

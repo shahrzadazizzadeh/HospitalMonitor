@@ -9,6 +9,12 @@ export interface ParsedSample {
   actionLimit: number;
   alertLimit: number;
   organism: string;
+  gmpGrade?: string;
+  isoClassification?: string;
+  shift?: string;
+  gramType?: string;
+  riskLevel?: string;
+  contaminationSource?: string;
 }
 
 export interface ParseResult {
@@ -38,6 +44,24 @@ const HEADER_MAP: Record<string, keyof ParsedSample> = {
   alertlimit: "alertLimit",
   organism: "organism",
   microorganism: "organism",
+  gmp_grade: "gmpGrade",
+  gmpgrade: "gmpGrade",
+  grade: "gmpGrade",
+  iso_classification: "isoClassification",
+  isoclassification: "isoClassification",
+  iso_class: "isoClassification",
+  isoclass: "isoClassification",
+  shift: "shift",
+  gram_type: "gramType",
+  gramtype: "gramType",
+  gram: "gramType",
+  risk_level: "riskLevel",
+  risklevel: "riskLevel",
+  risk: "riskLevel",
+  contamination_source: "contaminationSource",
+  contaminationsource: "contaminationSource",
+  contamination: "contaminationSource",
+  source: "contaminationSource",
 };
 
 function excelDateToJS(serial: number): Date {
@@ -145,6 +169,12 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
         actionLimit: record.actionLimit,
         alertLimit: record.alertLimit,
         organism: record.organism || "Unknown",
+        gmpGrade: record.gmpGrade,
+        isoClassification: record.isoClassification,
+        shift: record.shift,
+        gramType: record.gramType,
+        riskLevel: record.riskLevel,
+        contaminationSource: record.contaminationSource,
       });
     } catch (e) {
       errors.push(

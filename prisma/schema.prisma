@@ -37,8 +37,12 @@ model Sample {
   cfuCount    Float
   actionLimit Float
   alertLimit  Float
-  status      String    @default("compliant")
-  locationId  String
+  status              String    @default("compliant")
+  shift               String?
+  gmpGrade            String?
+  isoClassification   String?
+  contaminationSource String?
+  locationId          String
   location    Location  @relation(fields: [locationId], references: [id])
   organismId  String?
   organism    Organism? @relation(fields: [organismId], references: [id])
